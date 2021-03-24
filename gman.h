@@ -11,8 +11,6 @@ using namespace std;
 class GMan : public Reference {
 	GDCLASS(GMan, Reference);
 
-	int count;
-
 protected:
 	static void _bind_methods();
 
@@ -21,9 +19,10 @@ public:
 
 	Vector3 force_of(int id);
 	Vector3 going();
-	void add_planet(int id, int m, Vector3 location);
+	void add_planet(int id, double mass, Vector3 location);
 	void set_planet_location(int id, Vector3 location);
 	Vector3 get_planet_location(int id);
+	double get_planet_mass(int id);
 
 
 	GMan();

@@ -4,6 +4,7 @@
 class Planet{
 	public:
 		Vector3 location;
+		Vector3 velocity;
 		double mass;
 		Planet(){}
 		Planet(const Planet& other){
@@ -15,7 +16,7 @@ class Planet{
 			this->mass = other.mass;
         	return *this;
 		}
-		Planet(int x, Vector3 location){
+		Planet(double mass, Vector3 location){
 			this->location = location;
 			this->mass = mass;
 		}
