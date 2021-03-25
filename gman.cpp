@@ -19,8 +19,8 @@ Vector3 GMan::force_of_planet(int id) {
 	return force;
 }
 
-void GMan::add_planet(int id, double mass, Vector3 location){
-	planets[id] = Planet(mass, location);
+void GMan::add_planet(int id, double mass, Vector3 location, Vector3 velocity){
+	planets[id] = Planet(mass, location, velocity);
 }
 
 void  GMan::set_planet_location(int id, Vector3 location){
@@ -35,7 +35,19 @@ double GMan::get_planet_mass(int id) {
 	return planets[id].mass;
 }
 
+void GMan::update(double delta){
+	double r_squared;
+	double m1, m2;
+	for (auto a : planets)for (auto b : planets)if(a.first != b.first){
+		m1 = planets[a.first].mass; m2 = planets[b.first].mass;
+		r_squared = planets[a.first].location.distance_squared_to(planets[b.first].location);
+		planets[a.first].velocity += G * delta * (-planets[a.first].location + planets[b.first].location) * (m2/r_squared);
+	}
 
+	for (auto a : planets){
+		planets[a.first].location += planets[a.first].velocity;
+	}
+}
 
 
 
@@ -53,18 +65,21 @@ Vector3 GMan::force_of_object(int id) {
 
 
 void GMan::add_object(int id, double mass, Vector3 location){
-	objects[id] = Planet(mass, location);
+	objects[id] = Planet(mass, location, Vector3(0,0,0));
 }
 
 void  GMan::set_object_location(int id, Vector3 location){
 	objects[id].location = location;	
 }
 
+void GMan::set_G(double G){
+	this->G = G;
+}
 
 
 void GMan::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("force_of_planet", "id"), &GMan::force_of_planet);
-	ClassDB::bind_method(D_METHOD("add_planet", "id", "m", "location"), &GMan::add_planet);
+	ClassDB::bind_method(D_METHOD("add_planet", "id", "m", "location", "velocity"), &GMan::add_planet);
 	ClassDB::bind_method(D_METHOD("set_planet_location", "id", "location"), &GMan::set_planet_location);
 	ClassDB::bind_method(D_METHOD("get_planet_location", "id"), &GMan::get_planet_location);
 	ClassDB::bind_method(D_METHOD("get_planet_mass", "id"), &GMan::get_planet_mass);
@@ -73,6 +88,8 @@ void GMan::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_object", "id", "m", "location"), &GMan::add_object);
 	ClassDB::bind_method(D_METHOD("set_object_location", "id", "location"), &GMan::set_object_location);
 	
+	ClassDB::bind_method(D_METHOD("set_G", "G"), &GMan::set_G);
+	ClassDB::bind_method(D_METHOD("update", "delta"), &GMan::update);
 }	
 
 
