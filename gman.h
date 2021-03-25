@@ -17,9 +17,10 @@ protected:
 public:
 	unordered_map<int, Planet> planets;
 	unordered_map<int, Planet> objects;
+	double G = 10;
 
 	Vector3 force_of_planet(int id);
-	void add_planet(int id, double mass, Vector3 location);
+	void add_planet(int id, double mass, Vector3 location, Vector3 velocity);
 	void set_planet_location(int id, Vector3 location);
 	Vector3 get_planet_location(int id);
 	double get_planet_mass(int id);
@@ -27,6 +28,11 @@ public:
 	Vector3 force_of_object(int id);
 	void add_object(int id, double mass, Vector3 location);
 	void  set_object_location(int id, Vector3 location);
+
+	void update(double delta);
+
+	void set_G(double G);
+
 	GMan();
 
 };
