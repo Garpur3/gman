@@ -31,6 +31,8 @@ public:
 	void add_object(int id, double mass, Vector3 location, Vector3 velocity);
 	Vector3 get_object_location(int id);
 	void  set_object_location(int id, Vector3 location);
+	Vector3 get_object_velocity(int id);
+	void set_object_velocity(int id, Vector3 velocity);
 
 	void update(double delta);
 

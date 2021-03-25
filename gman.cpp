@@ -14,7 +14,7 @@ Vector3 GMan::force_of_planet(int id) {
 		m1 = planets[id].mass; m2 = x.second.mass;
 		
 		r_squared = planets[id].location.distance_squared_to(x.second.location);
-		force += (-planets[id].location + x.second.location) * (m1*m2/r_squared);
+		force += G * (-planets[id].location + x.second.location) * (m1*m2/r_squared);
 	}
 	return force;
 }
@@ -53,11 +53,11 @@ void GMan::update(double delta){
 	for (auto a : planets)for (auto b : planets)if(a.first != b.first){
 		m2 = planets[b.first].mass;
 		r_squared = planets[a.first].location.distance_squared_to(planets[b.first].location);
-		planets[a.first].velocity += G * delta * (-planets[a.first].location + planets[b.first].location) * (m2/r_squared);
+		planets[a.first].velocity += G *(-planets[a.first].location + planets[b.first].location) * (m2/r_squared);
 	}
 
 	for (auto a : planets){
-		planets[a.first].location += planets[a.first].velocity;
+		planets[a.first].location += delta * planets[a.first].velocity;
 	}
 
 	for (auto o : objects) {
@@ -66,11 +66,11 @@ void GMan::update(double delta){
 		// update velocities
 		m2 = planets[p.first].mass;
 		r_squared = planets[p.first].location.distance_squared_to(objects[o.first].location);
-		objects[o.first].velocity += G * delta * (planets[p.first].location - objects[o.first].location) * (m2/r_squared);
+		objects[o.first].velocity += G *(planets[p.first].location - objects[o.first].location) * (m2/r_squared);
 		}
 
 		// update location
-		objects[o.first].location += objects[o.first].velocity;
+		objects[o.first].location +=  delta * objects[o.first].velocity;
 	}
 }
 
@@ -83,7 +83,7 @@ Vector3 GMan::force_of_object(int id) {
 	for (auto x : planets){
 		m1 = objects[id].mass; m2 = x.second.mass;
 		r_squared = objects[id].location.distance_squared_to(x.second.location);
-		force += (x.second.location - objects[id].location) * (m1*m2/r_squared);
+		force += G * (x.second.location - objects[id].location) * (m1*m2/r_squared);
 	}
 	return force;
 }
@@ -95,6 +95,13 @@ void GMan::add_object(int id, double mass, Vector3 location, Vector3 velocity){
 
 void  GMan::set_object_location(int id, Vector3 location){
 	objects[id].location = location;	
+}
+Vector3 GMan::get_object_velocity(int id){
+	return objects[id].velocity;
+}
+
+void GMan::set_object_velocity(int id, Vector3 velocity){
+	objects[id].velocity = velocity;
 }
 
 void GMan::set_G(double G){
@@ -115,7 +122,9 @@ void GMan::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_object", "id", "m", "location", "velocity"), &GMan::add_object);
 	ClassDB::bind_method(D_METHOD("get_object_location", "id"), &GMan::get_object_location);
 	ClassDB::bind_method(D_METHOD("set_object_location", "id", "location"), &GMan::set_object_location);
-	
+	ClassDB::bind_method(D_METHOD("get_object_velocity", "id"), &GMan::get_object_velocity);
+	ClassDB::bind_method(D_METHOD("set_object_velocity", "id", "velocity"), &GMan::set_object_velocity);
+
 	ClassDB::bind_method(D_METHOD("set_G", "G"), &GMan::set_G);
 	ClassDB::bind_method(D_METHOD("update", "delta"), &GMan::update);
 }	
