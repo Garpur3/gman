@@ -53,7 +53,7 @@ void GMan::update(double delta){
 	for (auto a : planets)for (auto b : planets)if(a.first != b.first){
 		m2 = planets[b.first].mass;
 		r_squared = planets[a.first].location.distance_squared_to(planets[b.first].location);
-		planets[a.first].velocity += G *(-planets[a.first].location + planets[b.first].location) * (m2/r_squared);
+		planets[a.first].velocity += delta * G *(-planets[a.first].location + planets[b.first].location) * (m2/r_squared);
 	}
 
 	for (auto a : planets){
@@ -62,12 +62,13 @@ void GMan::update(double delta){
 
 	for (auto o : objects) {
 		for (auto p : planets) {
-
-		// update velocities
-		m2 = planets[p.first].mass;
-		r_squared = planets[p.first].location.distance_squared_to(objects[o.first].location);
-		objects[o.first].velocity += G *(planets[p.first].location - objects[o.first].location) * (m2/r_squared);
+			// update velocities
+			m2 = planets[p.first].mass;
+			r_squared = planets[p.first].location.distance_squared_to(objects[o.first].location);
+			objects[o.first].velocity += delta * G *(planets[p.first].location - objects[o.first].location) * (m2/r_squared);
 		}
+		// r_squared = planets[o.second.parent].location.distance_squared_to(o.second.location);
+		// objects[o.first].velocity += delta * G * (planets[o.second.parent].location - o.second.location) * (planets[o.second.parent].mass/r_squared);
 
 		// update location
 		objects[o.first].location +=  delta * objects[o.first].velocity;
@@ -77,6 +78,12 @@ void GMan::update(double delta){
 
 
 Vector3 GMan::force_of_object(int id) {
+
+	// double r_squared = objects[id].location.distance_squared_to(planets[objects[id].parent].location);
+	// double m1 = objects[id].mass;
+	// double m2 = planets[objects[id].parent].mass;
+	// return G * (planets[objects[id].parent].location - objects[id].location) * (m1 * m2/r_squared);
+
 	Vector3 force(0, 0, 0);
 	double r_squared;
 	double m1, m2;
@@ -91,6 +98,7 @@ Vector3 GMan::force_of_object(int id) {
 
 void GMan::add_object(int id, double mass, Vector3 location, Vector3 velocity){
 	objects[id] = Planet(mass, location, velocity);
+	// objects[id].set_parent(parent_id);
 }
 
 void  GMan::set_object_location(int id, Vector3 location){

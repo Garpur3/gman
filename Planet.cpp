@@ -6,6 +6,7 @@ class Planet{
 		Vector3 location;
 		Vector3 velocity;
 		double mass;
+		// int parent = -1;
 		Planet(){}
 		Planet(const Planet& other){
 			this->velocity = other.velocity;
@@ -23,4 +24,5 @@ class Planet{
 			this->location = location;
 			this->mass = mass;
 		}
+		// set_parent(int parent_id) { this->parent_id = parent_id; }
 };
